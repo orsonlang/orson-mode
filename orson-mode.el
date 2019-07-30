@@ -76,7 +76,8 @@
 ;;; Define the major mode
 
 ;;;###autoload
-(define-derived-mode orson-mode prog-mode "Orson"
+(define-derived-mode orson-mode lisp-mode "Orson"
+  ;; TODO remove reliance on lisp-mode
   :syntax-table orson-mode-syntax-table
   (setq-local syntax-propertize-function #'orson-syntax-propertize-function)
   (font-lock-ensure))
