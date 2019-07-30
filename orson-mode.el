@@ -75,6 +75,10 @@
 
 ;;; Define the major mode
 
+(defcustom orson-mode-hook nil
+  "hook run when entering Orson mode."
+  :type 'hook)
+
 ;;;###autoload
 (define-derived-mode orson-mode lisp-mode "Orson"
   ;; TODO remove reliance on lisp-mode
