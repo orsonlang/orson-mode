@@ -37,6 +37,155 @@
 (defvar font-lock-string-face)
 
 
+;;; Font-lock
+
+(defconst orson--operators
+  '(":−" ":-"
+    "≠")
+  "Operators in Orson.")
+
+(defconst orson--quoted-names
+  '("\"catch\""
+    "\"for\""
+    "\"mod\""
+    "\"not\"" "\"¬\""
+    "\"⊑\"" ; counterpart of plain name isCotype
+    "\"≼\"" ; counterpart of isSubsumed
+    "\"⊆\"" ; counterpart of isSubtype
+	  "␣[]"
+	  "␣{}"
+	  "&"
+	  "&="
+	  "⁎" "×"
+	  "⁎=" "×="
+	  "+"
+	  "+="
+	  "-" "−"
+	  "-=" "−="
+	  "."
+	  "/"
+	  "/="
+	  ":="
+	  "<"
+	  "<␣<"
+	  "<␣<=" "<␣≤"
+	  "<<" "←"
+	  "<<=" "←="
+	  "<=" "≤"
+	  "<=␣<" "≤␣<"
+	  "<=␣<=" "≤␣≤"
+	  "<>" "≠"
+	  "="
+	  ">"
+	  ">␣>"
+	  ">␣>=" ">␣≥"
+	  ">>" "→"
+	  ">>=" "→="
+	  ">=" "≥"
+	  ">=␣>" "≥␣>"
+	  ">=␣>=" "≥␣≥"
+	  "@" "↓"
+	  "[]␣"
+	  "^" "↑"
+	  "|"
+	  "|="
+	  "~"
+	  "~=")
+  "Quoted names in the Orson standard prelude")
+
+(defconst orson--plain-names
+  '("abs"
+    "align"
+    "argc"
+    "argv"
+    "arity"
+    "base"
+    "car" "cdr" "cons"
+    "comp" "conc" "count"
+    "devar"
+    "enum"
+    "error" "exit"
+    "flatten"
+    "halt"
+    "high"
+    "isChar" "isCotype" "isEmpty" "isError"
+    "isGoat" "isInt" "isJoked" "isNull"
+    "isReal" "isSkolem" "isString"
+    "isSubsumed" "isSubtype"
+    "length" "low" "max" "min"
+    "offset" "refs" "rethrow"
+    "size" "slot" "sort"
+    "throw" "thrown"
+    "version")
+  "Plain names in the Orson standard prelude")
+
+(defconst orson--types
+  '("bool" "false" "true"
+    "char" "char0" "char1"
+    "int" "int0" "int1" "int2"
+    "list"
+    "null" "nil"
+    "real" "real0" "real1"
+    "stream" "eos"
+    "string" "ϵ"
+    "void" "skip"
+    )
+  "Simple types in the Orson standard prelude")
+
+(defconst orson--joker-types
+  '("alj" "cha" "exe" "foj" "gej"
+    "inj" "met" "mut" "nom" "num"
+    "obj" "plj" "pro" "rej" "sca"
+    "str" "tup"
+    )
+  "Joker types in the Orson standard prelude")
+
+(defconst orson--clause-keywords
+  '("alt"
+    "alts"
+    "case"
+    "catch"
+    "for"
+    "form"
+    "gen"
+    "if"
+    "past"
+    "proc"
+    "tuple"
+    "while"
+    "with"
+    "load"
+    "prog"
+    )
+  "Clause keywords in Orson")
+
+(defconst orson-builtins
+  `((,(regexp-opt
+       `(,@orson--operators
+         ,@orson--clause-keywords)
+       'symbols)
+     . font-lock-builtin-face))
+  "All Orson builtins")
+
+(defconst orson-keywords
+  `((,(regexp-opt
+       `(
+         ,@orson--quoted-names
+         ,@orson--types
+         ,@orson--joker-types
+        )
+       'symbols)
+     . font-lock-keyword-face))
+  "All Orson keywords provided by the standard prelude")
+
+(defun orson-mode--setup-font-lock ()
+  "Set up `font-lock-defaults' for `orson-mode'."
+  (setq font-lock-defaults
+        `((,@orson-builtins ,@orson-keywords)
+          nil nil nil nil
+          (font-lock-mark-block-function . mark-defun))))
+
+
 ;;; Syntax regexps
 
 (defconst orson--string-rx
@@ -68,10 +217,14 @@
 
     (funcall
      (syntax-propertize-rules
-      ;; TODO others?
+      ;; TODO others
       )
-     (point) end)
-    ))
+     (point) end)))
+
+(defun orson-mode--setup-syntax ()
+  "Setup syntax and indentation"
+  (set-syntax-table orson-mode-syntax-table)
+  (setq-local syntax-propertize-function #'orson-syntax-propertize-function))
 
 
 ;;; Define the major mode
@@ -82,10 +235,9 @@
   :group 'orson-mode)
 
 ;;;###autoload
-(define-derived-mode orson-mode lisp-mode "Orson"
-  ;; TODO remove reliance on lisp-mode
-  :syntax-table orson-mode-syntax-table
-  (setq-local syntax-propertize-function #'orson-syntax-propertize-function)
+(define-derived-mode orson-mode prog-mode "Orson"
+  (orson-mode--setup-font-lock)
+  (orson-mode--setup-syntax)
   (font-lock-ensure))
 
 (provide 'orson-mode)
