@@ -40,7 +40,8 @@
 ;;; Syntax regexps
 
 (defconst orson--string-rx
-  "\\(''.*''\\)")
+  ;; TODO strings may contain a lone quote, this will not allow it
+  "\\(''[^']*''\\)")
 
 
 ;;; Generate syntax rules
