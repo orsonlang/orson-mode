@@ -39,19 +39,50 @@
 
 ;;; Font-lock
 
-(defconst orson--operators
+;; TODO collapse some of these
+
+(defconst orson--operators-keywords
   '(":−" ":-"
-    "≠")
+    "≠"
+
+    ;; clause keywords
+    "also"
+    "alt"
+    "alts"
+    "and" "∧"
+    "case"
+    "catch"
+    "do"
+    "else"
+    "for"
+    "form"
+    "gen"
+    "if"
+    "in"
+    "load"
+    "mod"
+    "none"
+    "not" "¬"
+    "of"
+    "or" "∨"
+    "past"
+    "proc"
+    "prog"
+    "ref"
+    "row"
+    "then"
+    "tuple"
+    "type"
+    "var"
+    "while"
+    "with"
+    )
   "Operators in Orson.")
 
-(defconst orson--quoted-names
-  '("\"catch\""
-    "\"for\""
-    "\"mod\""
-    "\"not\"" "\"¬\""
-    "\"⊑\"" ; counterpart of plain name isCotype
-    "\"≼\"" ; counterpart of isSubsumed
-    "\"⊆\"" ; counterpart of isSubtype
+(defconst orson--names
+  '("⊑" ; counterpart of plain name isCotype
+    "≼" ; counterpart of isSubsumed
+    "⊆" ; counterpart of isSubtype
 	  "␣[]"
 	  "␣{}"
 	  "&"
@@ -90,11 +121,8 @@
 	  "|"
 	  "|="
 	  "~"
-	  "~=")
-  "Quoted names in the Orson standard prelude")
-
-(defconst orson--plain-names
-  '("abs"
+	  "~="
+    "abs"
     "align"
     "argc"
     "argv"
@@ -117,7 +145,7 @@
     "size" "slot" "sort"
     "throw" "thrown"
     "version")
-  "Plain names in the Orson standard prelude")
+  "Names in the Orson standard prelude")
 
 (defconst orson--types
   '("bool" "false" "true"
@@ -129,59 +157,39 @@
     "stream" "eos"
     "string" "ϵ"
     "void" "skip"
-    )
-  "Simple types in the Orson standard prelude")
 
-(defconst orson--joker-types
-  '("alj" "cha" "exe" "foj" "gej"
+    ;; joker types
+    "alj" "cha" "exe" "foj" "gej"
     "inj" "met" "mut" "nom" "num"
     "obj" "plj" "pro" "rej" "sca"
-    "str" "tup"
-    )
-  "Joker types in the Orson standard prelude")
+    "str" "tup")
+  "Types in the Orson standard prelude")
 
-(defconst orson--clause-keywords
-  '("alt"
-    "alts"
-    "case"
-    "catch"
-    "for"
-    "form"
-    "gen"
-    "if"
-    "past"
-    "proc"
-    "tuple"
-    "while"
-    "with"
-    "load"
-    "prog"
-    )
-  "Clause keywords in Orson")
+(defconst orson-types
+  `((,(regexp-opt
+       orson--types
+       'symbols)
+     . font-lock-type-face))
+  "All Orson builtins")
 
 (defconst orson-builtins
   `((,(regexp-opt
-       `(,@orson--operators
-         ,@orson--clause-keywords)
+       orson--operators-keywords
        'symbols)
      . font-lock-builtin-face))
-  "All Orson builtins")
+  "All builtin Orson keywords")
 
 (defconst orson-keywords
   `((,(regexp-opt
-       `(
-         ,@orson--quoted-names
-         ,@orson--types
-         ,@orson--joker-types
-        )
+       orson--names
        'symbols)
      . font-lock-keyword-face))
-  "All Orson keywords provided by the standard prelude")
+  "All keywords provided by the Orson standard prelude")
 
 (defun orson-mode--setup-font-lock ()
   "Set up `font-lock-defaults' for `orson-mode'."
   (setq font-lock-defaults
-        `((,@orson-builtins ,@orson-keywords)
+        `((,@orson-builtins ,@orson-keywords ,@orson-types)
           nil nil nil nil
           (font-lock-mark-block-function . mark-defun))))
 
