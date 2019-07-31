@@ -78,7 +78,8 @@
 
 (defcustom orson-mode-hook nil
   "hook run when entering Orson mode."
-  :type 'hook)
+  :type 'hook
+  :group 'orson-mode)
 
 ;;;###autoload
 (define-derived-mode orson-mode lisp-mode "Orson"
