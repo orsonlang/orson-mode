@@ -233,7 +233,13 @@
 (defun orson-mode--setup-syntax ()
   "Setup syntax and indentation"
   (set-syntax-table orson-mode-syntax-table)
-  (setq-local syntax-propertize-function #'orson-syntax-propertize-function))
+  (setq-local syntax-propertize-function #'orson-syntax-propertize-function)
+
+  ;; Orson does not allow tabs
+  (setq-local indent-tabs-mode nil)
+  (setq-local indent-line-function #'lisp-indent-line)
+  ;; (setq-local lisp-indent-function #'orson-indent-function)
+  )
 
 
 ;;; Define the major mode
