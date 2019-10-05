@@ -31,11 +31,12 @@
 ;;
 ;;; Code:
 
+(require 'lisp-mode) ; for indent function
+
 (defvar font-lock-comment-face)
 (defvar font-lock-doc-face)
 (defvar font-lock-keywords-case-fold-search)
 (defvar font-lock-string-face)
-
 
 ;;; Font-lock
 
